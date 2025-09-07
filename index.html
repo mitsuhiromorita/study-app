@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中学受験サポートアプリ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>中学受験サポートアプリ</h1>
+
+        <div class="section">
+            <h2>志望校カウントダウン</h2>
+            <label for="schoolName">志望校名:</label>
+            <input type="text" id="schoolName" placeholder="例: 〇〇中学校">
+            <label for="examDate">試験日:</label>
+            <input type="date" id="examDate">
+            <p>試験日まであと: <span id="daysRemaining">0</span>日</p>
+        </div>
+
+        <div class="section">
+            <h2>Todoリスト</h2>
+            <input type="text" id="todoInput" placeholder="新しいTodoを入力">
+            <button id="addTodoBtn">追加</button>
+            <ul id="todoList"></ul>
+        </div>
+
+        <div class="section">
+            <h2>教材進捗管理</h2>
+            <label for="materialName">教材名:</label>
+            <input type="text" id="materialName" placeholder="例: 算数基礎問題集">
+            <label for="totalPage">総ページ数:</label>
+            <input type="number" id="totalPage" value="0">
+            <label for="currentPage">現在のページ:</label>
+            <input type="number" id="currentPage" value="0">
+            <p>1日あたりの必達ページ数: <span id="pagesPerDay">0</span>ページ</p>
+        </div>
+
+        <div class="section">
+            <h2>復習問題（画像）</h2>
+            <input type="file" id="imageUpload" accept="image/*">
+            <button id="addImageBtn">画像を追加</button>
+            <div id="imageGallery"></div>
+        </div>
+
+        <div class="section">
+            <h2>自由メモ</h2>
+            <textarea id="freeNotes" placeholder="自由にメモを記入してください..." rows="10"></textarea>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
