@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="学習サポート">
+    <title>学習サポートアプリ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="countdown-bar">
+        <div class="school-countdown" id="schoolCountdown1">
+            <div class="school-title">第1志望</div>
+            <div id="schoolInfo1">
+                <span id="schoolNameDisplay1">志望校を設定してください</span>
+            </div>
+            <div class="days-remaining" id="daysRemaining1">0日</div>
+            <button class="edit-btn" id="editBtn1">編集</button>
+            <div class="input-area" id="inputArea1">
+                <input type="text" id="schoolName1" placeholder="学校名を入力">
+                <input type="date" id="examDate1">
+                <button class="btn" id="saveBtn1">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section fade-in">
+            <h2>📝 Todoリスト</h2>
+            <div class="input-group">
+                <input type="text" id="todoInput" placeholder="新しいタスクを入力してください">
+                <button class="btn" id="addTodoBtn">追加</button>
+            </div>
+            <ul class="todo-list" id="todoList"></ul>
+        </div>
+
+        <div class="section fade-in">
+            <h2>📚 教材進捗管理</h2>
+            <div class="input-group">
+                <label for="materialName">教材名</label>
+                <input type="text" id="materialName" placeholder="例: 算数基礎問題集">
+            </div>
+            <div class="input-group">
+                <label for="totalPages">総ページ数</label>
+                <input type="number" id="totalPages" min="0" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label for="currentPage">現在のページ</label>
+                <input type="number" id="currentPage" min="0" placeholder="0">
+            </div>
+            <div class="progress-info" id="progressInfo">
+                1日あたり: 0ページ
+            </div>
+        </div>
+
+        <div class="section fade-in">
+            <h2>📷 復習問題（画像）</h2>
+            <div class="input-group">
+                <input type="file" id="imageUpload" accept="image/*">
+                <button class="btn" id="addImageBtn">画像を追加</button>
+            </div>
+            <div class="image-gallery" id="imageGallery">
+                <div class="empty-state">復習したい問題の画像がここに表示されます</div>
+            </div>
+        </div>
+
+        <div class="section fade-in">
+            <h2>📝 自由メモ</h2>
+            <textarea id="freeNotes" placeholder="自由にメモを記入してください..." rows="8"></textarea>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
