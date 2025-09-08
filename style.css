@@ -175,16 +175,30 @@ span {
     display: flex;
     align-items: center;
     gap: 0.7em;
-    background: none;
+    background: #fff;
     padding: 0.3em 0.8em;
     border-radius: 8px;
     min-width: 270px;
     margin-bottom: 0.5em;
     border: 1px solid #e0e0e0;
+    justify-content: flex-start;
+    position: relative;
+}
+
+.school-countdown .school-title {
+    font-weight: bold;
+    color: #34495e;
+    margin-right: 0.7em;
+    min-width: 60px;
 }
 
 .school-countdown .days-remaining-label {
     margin-left: 1em;
+}
+
+.school-countdown .editCountdownBtn {
+    margin-left: auto;
+    order: 99;
 }
 
 .school-countdown input[type="text"],

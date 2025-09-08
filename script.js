@@ -128,7 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const updatePagesPerDay = () => {
         const total = parseInt(totalPageInput.value, 10);
         const current = parseInt(currentPageInput.value, 10);
-        const remainingDays = parseInt(daysRemainingSpan.textContent, 10);
+
+        // 第一志望校の残り日数を取得
+        const daysRemaining1 = document.getElementById('daysRemaining1');
+        const remainingDays = daysRemaining1 ? parseInt(daysRemaining1.textContent, 10) : 0;
 
         if (isNaN(total) || isNaN(current) || total <= 0 || remainingDays <= 0 || current > total) {
             pagesPerDaySpan.textContent = '0';
@@ -309,6 +312,26 @@ document.addEventListener('DOMContentLoaded', () => {
         setupSchoolCountdown(i);
     }
 
+    // 志望校追加ボタンの処理
+    const addSchoolBtn = document.getElementById('addSchoolBtn');
+    if (addSchoolBtn) {
+        addSchoolBtn.addEventListener('click', () => {
+            for (let i = 1; i <= SCHOOL_MAX; i++) {
+                const schoolName = localStorage.getItem(`schoolName${i}`) || '';
+                const schoolDiv = document.getElementById(`schoolCountdown${i}`);
+                const inputArea = document.getElementById(`countdownInputArea${i}`);
+                const editBtn = document.getElementById(`editCountdownBtn${i}`);
+                // 未入力かつ非表示の志望校欄を見つけて表示
+                if (!schoolName && schoolDiv && schoolDiv.style.display === 'none') {
+                    schoolDiv.style.display = '';
+                    inputArea.style.display = '';
+                    editBtn.style.display = 'none';
+                    break;
+                }
+            }
+        });
+    }
+
     function setupSchoolCountdown(idx) {
         const editBtn = document.getElementById(`editCountdownBtn${idx}`);
         const saveBtn = document.getElementById(`saveCountdownBtn${idx}`);
@@ -355,11 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
             inputArea.style.display = 'none';
             editBtn.style.display = '';
             updateDisplay();
-            // 次順位の志望校欄を表示（未入力なら空欄で）
-            if (schoolNameInput.value && idx < SCHOOL_MAX) {
-                const nextDiv = document.getElementById(`schoolCountdown${idx + 1}`);
-                if (nextDiv) nextDiv.style.display = '';
-            }
         });
 
         // 初期表示
