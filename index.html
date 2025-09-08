@@ -380,11 +380,7 @@
         
 
         <div class="section fade-in">
-            <h2>📚 教材進捗管理</h2>
-            <div class="input-group">
-                <label for="materialName">教材名</label>
-                <input type="text" id="materialName" placeholder="例: 算数基礎問題集">
-            </div>
+            <h2>📚 必達ページ数計算</h2>
             <div class="input-group">
                 <label for="totalPages">総ページ数</label>
                 <input type="number" id="totalPages" min="0" placeholder="0">
@@ -394,7 +390,7 @@
                 <input type="number" id="currentPage" min="0" placeholder="0">
             </div>
             <div class="progress-info" id="progressInfo">
-                1日あたり: 0ページ
+                本日の必達: 0ページ
             </div>
         </div>
 
@@ -432,11 +428,10 @@
             schools: [
                 { name: '', date: '' },
                 { name: '', date: '' },
-                { name: '', date: '' },
                 { name: '', date: '' }
             ],
             todos: [],
-            materials: { name: '', total: 0, current: 0 },
+            materials: { total: 0, current: 0 },
             images: [],
             notes: ''
         };
@@ -480,21 +475,12 @@
             examDate3: document.getElementById('examDate3'),
             saveBtn3: document.getElementById('saveBtn3'),
 
-            schoolNameDisplay4: document.getElementById('schoolNameDisplay4'),
-            daysRemaining4: document.getElementById('daysRemaining4'),
-            editBtn4: document.getElementById('editBtn4'),
-            inputArea4: document.getElementById('inputArea4'),
-            schoolName4: document.getElementById('schoolName4'),
-            examDate4: document.getElementById('examDate4'),
-            saveBtn4: document.getElementById('saveBtn4'),
-
             // Todo関連
             todoInput: document.getElementById('todoInput'),
             addTodoBtn: document.getElementById('addTodoBtn'),
             todoList: document.getElementById('todoList'),
 
             // 教材進捗関連
-            materialName: document.getElementById('materialName'),
             totalPages: document.getElementById('totalPages'),
             currentPage: document.getElementById('currentPage'),
             progressInfo: document.getElementById('progressInfo'),
@@ -524,7 +510,7 @@
 
         // 志望校表示更新
         function updateSchoolDisplay() {
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < 3; i++) {
                 const school = appData.schools[i];
                 const days = calculateDaysRemaining(school.date);
                 
@@ -556,12 +542,14 @@
                 li.querySelector('.todo-checkbox').addEventListener('change', (e) => {
                     appData.todos[index].completed = e.target.checked;
                     updateTodoDisplay();
+                    saveData();
                 });
                 
                 // 削除ボタンイベント
                 li.querySelector('.btn-danger').addEventListener('click', () => {
                     appData.todos.splice(index, 1);
                     updateTodoDisplay();
+                    saveData();
                 });
                 
                 elements.todoList.appendChild(li);
@@ -570,18 +558,17 @@
 
         // 進捗表示更新
         function updateProgressDisplay() {
-            const { name, total, current } = appData.materials;
+            const { total, current } = appData.materials;
             const days = calculateDaysRemaining(appData.schools[0].date); // 第1志望の残り日数を使用
             
-            elements.materialName.value = name;
             elements.totalPages.value = total;
             elements.currentPage.value = current;
             
             if (days > 0 && total > current) {
                 const pagesPerDay = Math.ceil((total - current) / days);
-                elements.progressInfo.textContent = `1日あたり: ${pagesPerDay}ページ (残り${total - current}ページ、第1志望まで${days}日)`;
+                elements.progressInfo.textContent = `本日の必達: ${pagesPerDay}ページ (残り${total - current}ページ)`;
             } else {
-                elements.progressInfo.textContent = '1日あたり: 0ページ';
+                elements.progressInfo.textContent = '本日の必達: 0ページ';
             }
         }
 
@@ -627,6 +614,7 @@
                     if (confirm('この画像を削除しますか？')) {
                         appData.images.splice(index, 1);
                         updateImageDisplay();
+                        saveData();
                     }
                 });
                 
@@ -638,8 +626,8 @@
 
         // イベントリスナーの設定
         function setupEventListeners() {
-            // 志望校編集（1〜4志望）
-            for (let i = 1; i <= 4; i++) {
+            // 志望校編集（1〜3志望）
+            for (let i = 1; i <= 3; i++) {
                 elements[`editBtn${i}`].addEventListener('click', () => {
                     elements[`inputArea${i}`].classList.add('active');
                     elements[`schoolName${i}`].value = appData.schools[i-1].name;
@@ -657,7 +645,7 @@
                     elements[`inputArea${i}`].classList.remove('active');
                     updateSchoolDisplay();
                     updateProgressDisplay(); // 第1志望が変更された場合に進捗も更新
-                    saveData(); //
+                    saveData();
                     // キーボードを閉じる
                     document.activeElement.blur();
                 });
@@ -670,7 +658,7 @@
                     appData.todos.push({ text, completed: false });
                     elements.todoInput.value = '';
                     updateTodoDisplay();
-                    saveData(); //
+                    saveData();
                     // 成功時の視覚フィードバック
                     elements.addTodoBtn.style.background = 'linear-gradient(135deg, #48bb78, #38a169)';
                     setTimeout(() => {
@@ -688,19 +676,16 @@
             });
 
             // 教材進捗
-            elements.materialName.addEventListener('input', (e) => {
-                appData.materials.name = e.target.value;
-            });
-            
             elements.totalPages.addEventListener('input', (e) => {
                 appData.materials.total = parseInt(e.target.value) || 0;
                 updateProgressDisplay();
-                saveData(); //
+                saveData();
             });
             
             elements.currentPage.addEventListener('input', (e) => {
                 appData.materials.current = parseInt(e.target.value) || 0;
                 updateProgressDisplay();
+                saveData();
             });
 
             // 画像アップロード
@@ -720,6 +705,7 @@
                             data: e.target.result
                         });
                         updateImageDisplay();
+                        saveData();
                         elements.imageUpload.value = '';
                         
                         // 成功時のフィードバック
@@ -740,6 +726,7 @@
             // 自由メモ
             elements.freeNotes.addEventListener('input', (e) => {
                 appData.notes = e.target.value;
+                saveData();
             });
 
             // タッチイベントの最適化
@@ -778,6 +765,7 @@
                                 data: e.target.result
                             });
                             updateImageDisplay();
+                            saveData();
                         };
                         reader.readAsDataURL(file);
                     }
@@ -805,12 +793,13 @@
 
         // 初期化
         function init() {
-            loadData(); //
+            loadData();
             setupEventListeners();
             updateSchoolDisplay();
             updateTodoDisplay();
             updateProgressDisplay();
             updateImageDisplay();
+            elements.freeNotes.value = appData.notes;
             
             // アニメーション遅延
             document.querySelectorAll('.fade-in').forEach((el, index) => {
@@ -819,6 +808,10 @@
         }
 
         // ページ読み込み完了後に初期化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>/ ページ読み込み完了後に初期化
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
