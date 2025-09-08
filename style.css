@@ -7,19 +7,19 @@ body {
 }
 
 .container {
-    max-width: 900px; /* iPadの幅に合わせて調整 */
-    margin: 20px auto;
+    max-width: 700px;
+    margin: 0 auto;
     background-color: #fff;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 複数のカラムで表示 */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 25px;
 }
 
 h1 {
-    grid-column: 1 / -1; /* タイトルは全幅 */
+    grid-column: 1 / -1;
     text-align: center;
     color: #2c3e50;
     margin-bottom: 30px;
@@ -60,11 +60,11 @@ textarea {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1em;
-    box-sizing: border-box; /* paddingを含めた幅にする */
+    box-sizing: border-box;
 }
 
 input[type="date"] {
-    width: auto; /* 日付入力は幅を自動調整 */
+    width: auto;
 }
 
 button {
@@ -106,7 +106,7 @@ button:hover {
 
 #todoList li input[type="checkbox"] {
     margin-right: 10px;
-    transform: scale(1.2); /* チェックボックスを少し大きく */
+    transform: scale(1.2);
 }
 
 #todoList li button {
@@ -139,7 +139,7 @@ button:hover {
 }
 
 textarea {
-    resize: vertical; /* 垂直方向のみリサイズ可能 */
+    resize: vertical;
 }
 
 p {
@@ -152,10 +152,65 @@ span {
     color: #007bff;
 }
 
-/* レスポンシブデザインの調整 */
+.countdown-bar {
+    width: 100vw;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;
+    gap: 2em;
+    background: #f0f4fa;
+    padding: 1.2em 2em;
+    border-radius: 0 0 12px 12px;
+    font-size: 1.1em;
+    justify-content: flex-start;
+    margin-bottom: 2em;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    transform: translateX(-50%);
+    flex-wrap: wrap;
+}
+
+.school-countdown {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    background: none;
+    padding: 0.3em 0.8em;
+    border-radius: 8px;
+    min-width: 270px;
+    margin-bottom: 0.5em;
+    border: 1px solid #e0e0e0;
+}
+
+.school-countdown .days-remaining-label {
+    margin-left: 1em;
+}
+
+.school-countdown input[type="text"],
+.school-countdown input[type="date"] {
+    margin-right: 0.5em;
+    padding: 0.3em 0.7em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
 @media (max-width: 768px) {
     .container {
-        grid-template-columns: 1fr; /* 画面が狭い場合は1カラム */
+        grid-template-columns: 1fr;
         padding: 20px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .countdown-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1em;
+    }
+
+    .school-countdown {
+        min-width: unset;
+        width: 100%;
     }
 }

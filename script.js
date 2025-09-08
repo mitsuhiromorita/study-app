@@ -303,6 +303,71 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500); // 500ms後に保存
     });
 
+    // === カウントダウン設定 ===
+    const SCHOOL_MAX = 5;
+    for (let i = 1; i <= SCHOOL_MAX; i++) {
+        setupSchoolCountdown(i);
+    }
+
+    function setupSchoolCountdown(idx) {
+        const editBtn = document.getElementById(`editCountdownBtn${idx}`);
+        const saveBtn = document.getElementById(`saveCountdownBtn${idx}`);
+        const inputArea = document.getElementById(`countdownInputArea${idx}`);
+        const schoolNameInput = document.getElementById(`schoolName${idx}`);
+        const examDateInput = document.getElementById(`examDate${idx}`);
+        const schoolNameDisplay = document.getElementById(`schoolNameDisplay${idx}`);
+        const examDateDisplay = document.getElementById(`examDateDisplay${idx}`);
+        const daysRemaining = document.getElementById(`daysRemaining${idx}`);
+        const schoolCountdownDiv = document.getElementById(`schoolCountdown${idx}`);
+
+        function updateDisplay() {
+            const name = localStorage.getItem(`schoolName${idx}`) || '';
+            const date = localStorage.getItem(`examDate${idx}`) || '';
+            schoolNameDisplay.textContent = name ? `第${idx}志望: ${name}` : '';
+            examDateDisplay.textContent = date ? `（${date}）` : '';
+            if (date) {
+                const today = new Date();
+                const exam = new Date(date);
+                const diff = Math.ceil((exam - today) / (1000 * 60 * 60 * 24));
+                daysRemaining.textContent = diff >= 0 ? diff : 0;
+            } else {
+                daysRemaining.textContent = '0';
+            }
+            // 入力がなければ非表示
+            if (name || inputArea.style.display === '') {
+                schoolCountdownDiv.style.display = '';
+            } else {
+                schoolCountdownDiv.style.display = 'none';
+            }
+        }
+
+        editBtn.addEventListener('click', function() {
+            inputArea.style.display = '';
+            editBtn.style.display = 'none';
+            // 入力欄に現在値をセット
+            schoolNameInput.value = localStorage.getItem(`schoolName${idx}`) || '';
+            examDateInput.value = localStorage.getItem(`examDate${idx}`) || '';
+        });
+
+        saveBtn.addEventListener('click', function() {
+            localStorage.setItem(`schoolName${idx}`, schoolNameInput.value);
+            localStorage.setItem(`examDate${idx}`, examDateInput.value);
+            inputArea.style.display = 'none';
+            editBtn.style.display = '';
+            updateDisplay();
+            // 次順位の志望校欄を表示（未入力なら空欄で）
+            if (schoolNameInput.value && idx < SCHOOL_MAX) {
+                const nextDiv = document.getElementById(`schoolCountdown${idx + 1}`);
+                if (nextDiv) nextDiv.style.display = '';
+            }
+        });
+
+        // 初期表示
+        inputArea.style.display = 'none';
+        editBtn.style.display = '';
+        updateDisplay();
+    }
+
     // === 初期ロード ===
     loadData();
 });
