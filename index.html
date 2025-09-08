@@ -2,124 +2,73 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="学習サポート">
     <title>学習サポートアプリ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="countdown-bar">
-        <!-- 志望校ごとに繰り返し -->
         <div class="school-countdown" id="schoolCountdown1">
-            <h2 class="school-title">志望校</h2>
-            <span id="schoolInfo1">
-                <span id="schoolNameDisplay1"></span>
-                <span id="examDateDisplay1"></span>
-                <span class="days-remaining-label" style="margin-left:1em;">試験日まであと: <span id="daysRemaining1">0</span>日</span>
-            </span>
-            <button class="editCountdownBtn" id="editCountdownBtn1">編集</button>
-            <div id="countdownInputArea1" style="display:none;">
-                <label for="schoolName1">第1志望校名:</label>
-                <input type="text" id="schoolName1" placeholder="例: 〇〇中学校">
-                <label for="examDate1">試験日:</label>
+            <div class="school-title">第1志望</div>
+            <div id="schoolInfo1">
+                <span id="schoolNameDisplay1">志望校を設定してください</span>
+            </div>
+            <div class="days-remaining" id="daysRemaining1">0日</div>
+            <button class="edit-btn" id="editBtn1">編集</button>
+            <div class="input-area" id="inputArea1">
+                <input type="text" id="schoolName1" placeholder="学校名を入力">
                 <input type="date" id="examDate1">
-                <button id="saveCountdownBtn1">保存</button>
-            </div>
-        </div>
-        <div class="school-countdown" id="schoolCountdown2" style="display:none;">
-            <h2 class="school-title">志望校</h2>
-            <span id="schoolInfo2">
-                <span id="schoolNameDisplay2"></span>
-                <span id="examDateDisplay2"></span>
-                <span class="days-remaining-label" style="margin-left:1em;">試験日まであと: <span id="daysRemaining2">0</span>日</span>
-            </span>
-            <button class="editCountdownBtn" id="editCountdownBtn2">編集</button>
-            <div id="countdownInputArea2" style="display:none;">
-                <label for="schoolName2">第2志望校名:</label>
-                <input type="text" id="schoolName2" placeholder="例: △△中学校">
-                <label for="examDate2">試験日:</label>
-                <input type="date" id="examDate2">
-                <button id="saveCountdownBtn2">保存</button>
-            </div>
-        </div>
-        <div class="school-countdown" id="schoolCountdown3" style="display:none;">
-            <h2 class="school-title">志望校</h2>
-            <span id="schoolInfo3">
-                <span id="schoolNameDisplay3"></span>
-                <span id="examDateDisplay3"></span>
-                <span class="days-remaining-label" style="margin-left:1em;">試験日まであと: <span id="daysRemaining3">0</span>日</span>
-            </span>
-            <button class="editCountdownBtn" id="editCountdownBtn3">編集</button>
-            <div id="countdownInputArea3" style="display:none;">
-                <label for="schoolName3">第3志望校名:</label>
-                <input type="text" id="schoolName3" placeholder="例: □□中学校">
-                <label for="examDate3">試験日:</label>
-                <input type="date" id="examDate3">
-                <button id="saveCountdownBtn3">保存</button>
-            </div>
-        </div>
-        <div class="school-countdown" id="schoolCountdown4" style="display:none;">
-            <h2 class="school-title">志望校</h2>
-            <span id="schoolInfo4">
-                <span id="schoolNameDisplay4"></span>
-                <span id="examDateDisplay4"></span>
-                <span class="days-remaining-label" style="margin-left:1em;">試験日まであと: <span id="daysRemaining4">0</span>日</span>
-            </span>
-            <button class="editCountdownBtn" id="editCountdownBtn4">編集</button>
-            <div id="countdownInputArea4" style="display:none;">
-                <label for="schoolName4">第4志望校名:</label>
-                <input type="text" id="schoolName4" placeholder="例: ☆☆中学校">
-                <label for="examDate4">試験日:</label>
-                <input type="date" id="examDate4">
-                <button id="saveCountdownBtn4">保存</button>
-            </div>
-        </div>
-        <div class="school-countdown" id="schoolCountdown5" style="display:none;">
-            <h2 class="school-title">志望校</h2>
-            <span id="schoolInfo5">
-                <span id="schoolNameDisplay5"></span>
-                <span id="examDateDisplay5"></span>
-                <span class="days-remaining-label" style="margin-left:1em;">試験日まであと: <span id="daysRemaining5">0</span>日</span>
-            </span>
-            <button class="editCountdownBtn" id="editCountdownBtn5">編集</button>
-            <div id="countdownInputArea5" style="display:none;">
-                <label for="schoolName5">第5志望校名:</label>
-                <input type="text" id="schoolName5" placeholder="例: ▲▲中学校">
-                <label for="examDate5">試験日:</label>
-                <input type="date" id="examDate5">
-                <button id="saveCountdownBtn5">保存</button>
+                <button class="btn" id="saveBtn1">保存</button>
             </div>
         </div>
     </div>
+
     <div class="container">
-
-        <div class="section">
-            <h2>Todoリスト</h2>
-            <input type="text" id="todoInput" placeholder="新しいTodoを入力">
-            <button id="addTodoBtn">追加</button>
-            <ul id="todoList"></ul>
+        <div class="section fade-in">
+            <h2>📝 Todoリスト</h2>
+            <div class="input-group">
+                <input type="text" id="todoInput" placeholder="新しいタスクを入力してください">
+                <button class="btn" id="addTodoBtn">追加</button>
+            </div>
+            <ul class="todo-list" id="todoList"></ul>
         </div>
 
-        <div class="section">
-            <h2>教材進捗管理</h2>
-            <label for="materialName">教材名:</label>
-            <input type="text" id="materialName" placeholder="例: 算数基礎問題集">
-            <label for="totalPage">総ページ数:</label>
-            <input type="number" id="totalPage" value="0">
-            <label for="currentPage">現在のページ:</label>
-            <input type="number" id="currentPage" value="0">
-            <p>1日あたりの必達ページ数: <span id="pagesPerDay">0</span>ページ</p>
+        <div class="section fade-in">
+            <h2>📚 教材進捗管理</h2>
+            <div class="input-group">
+                <label for="materialName">教材名</label>
+                <input type="text" id="materialName" placeholder="例: 算数基礎問題集">
+            </div>
+            <div class="input-group">
+                <label for="totalPages">総ページ数</label>
+                <input type="number" id="totalPages" min="0" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label for="currentPage">現在のページ</label>
+                <input type="number" id="currentPage" min="0" placeholder="0">
+            </div>
+            <div class="progress-info" id="progressInfo">
+                1日あたり: 0ページ
+            </div>
         </div>
 
-        <div class="section">
-            <h2>復習問題（画像）</h2>
-            <input type="file" id="imageUpload" accept="image/*">
-            <button id="addImageBtn">画像を追加</button>
-            <div id="imageGallery"></div>
+        <div class="section fade-in">
+            <h2>📷 復習問題（画像）</h2>
+            <div class="input-group">
+                <input type="file" id="imageUpload" accept="image/*">
+                <button class="btn" id="addImageBtn">画像を追加</button>
+            </div>
+            <div class="image-gallery" id="imageGallery">
+                <div class="empty-state">復習したい問題の画像がここに表示されます</div>
+            </div>
         </div>
 
-        <div class="section">
-            <h2>自由メモ</h2>
-            <textarea id="freeNotes" placeholder="自由にメモを記入してください..." rows="10"></textarea>
+        <div class="section fade-in">
+            <h2>📝 自由メモ</h2>
+            <textarea id="freeNotes" placeholder="自由にメモを記入してください..." rows="8"></textarea>
         </div>
     </div>
 
