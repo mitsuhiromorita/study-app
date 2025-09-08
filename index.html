@@ -2,12 +2,332 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="学習サポート">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>学習サポートアプリ</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .countdown-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 1170px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .school-countdown {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .school-countdown:hover {
+            transform: translateY(-2px);
+        }
+
+        .school-title {
+            font-weight: bold;
+            color: #4a5568;
+            min-width: 80px;
+        }
+
+        .days-remaining {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .edit-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .edit-btn:hover {
+            background: #3182ce;
+        }
+
+        .input-area {
+            display: none;
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .input-area.active {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-4px);
+        }
+
+        .section h2 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #fc8181, #f56565);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 4px 15px rgba(245, 101, 101, 0.4);
+        }
+
+        .todo-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .todo-item {
+            background: #f7fafc;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .todo-item:hover {
+            background: #edf2f7;
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .todo-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .todo-text {
+            flex: 1;
+        }
+
+        .progress-info {
+            background: linear-gradient(135deg, #4fd1c7, #38b2ac);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            min-height: 120px;
+            padding: 1rem;
+            border: 2px dashed #cbd5e0;
+            border-radius: 10px;
+            place-items: center;
+        }
+
+        .image-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .image-item:hover {
+            transform: scale(1.05);
+        }
+
+        .image-item img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            cursor: zoom-in;
+        }
+
+        .delete-image-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .image-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #a0aec0;
+            font-style: italic;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .school-countdown {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .days-remaining {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="countdown-bar">
@@ -24,17 +344,40 @@
                 <button class="btn" id="saveBtn1">保存</button>
             </div>
         </div>
+        
+        <div class="school-countdown" id="schoolCountdown2">
+            <div class="school-title">第2志望</div>
+            <div id="schoolInfo2">
+                <span id="schoolNameDisplay2">志望校を設定してください</span>
+            </div>
+            <div class="days-remaining" id="daysRemaining2">0日</div>
+            <button class="edit-btn" id="editBtn2">編集</button>
+            <div class="input-area" id="inputArea2">
+                <input type="text" id="schoolName2" placeholder="学校名を入力">
+                <input type="date" id="examDate2">
+                <button class="btn" id="saveBtn2">保存</button>
+            </div>
+        </div>
+        
+        <div class="school-countdown" id="schoolCountdown3">
+            <div class="school-title">第3志望</div>
+            <div id="schoolInfo3">
+                <span id="schoolNameDisplay3">志望校を設定してください</span>
+            </div>
+            <div class="days-remaining" id="daysRemaining3">0日</div>
+            <button class="edit-btn" id="editBtn3">編集</button>
+            <div class="input-area" id="inputArea3">
+                <input type="text" id="schoolName3" placeholder="学校名を入力">
+                <input type="date" id="examDate3">
+                <button class="btn" id="saveBtn3">保存</button>
+            </div>
+        </div>
+        
+        
     </div>
 
     <div class="container">
-        <div class="section fade-in">
-            <h2>📝 Todoリスト</h2>
-            <div class="input-group">
-                <input type="text" id="todoInput" placeholder="新しいタスクを入力してください">
-                <button class="btn" id="addTodoBtn">追加</button>
-            </div>
-            <ul class="todo-list" id="todoList"></ul>
-        </div>
+        
 
         <div class="section fade-in">
             <h2>📚 教材進捗管理</h2>
@@ -56,6 +399,20 @@
         </div>
 
         <div class="section fade-in">
+            <h2>📝 Todoリスト</h2>
+            <div class="input-group">
+                <input type="text" id="todoInput" placeholder="新しいタスクを入力してください">
+                <button class="btn" id="addTodoBtn">追加</button>
+            </div>
+            <ul class="todo-list" id="todoList"></ul>
+        </div>
+
+        <div class="section fade-in">
+            <h2>📝 自由メモ</h2>
+            <textarea id="freeNotes" placeholder="自由にメモを記入してください..." rows="8"></textarea>
+        </div>
+
+        <div class="section fade-in">
             <h2>📷 復習問題（画像）</h2>
             <div class="input-group">
                 <input type="file" id="imageUpload" accept="image/*">
@@ -66,12 +423,403 @@
             </div>
         </div>
 
-        <div class="section fade-in">
-            <h2>📝 自由メモ</h2>
-            <textarea id="freeNotes" placeholder="自由にメモを記入してください..." rows="8"></textarea>
-        </div>
+        
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // メモリ内データストレージ（ページリロードで消える）
+        let appData = {
+            schools: [
+                { name: '', date: '' },
+                { name: '', date: '' },
+                { name: '', date: '' },
+                { name: '', date: '' }
+            ],
+            todos: [],
+            materials: { name: '', total: 0, current: 0 },
+            images: [],
+            notes: ''
+        };
+
+
+        function saveData() {
+            localStorage.setItem('studyAppData', JSON.stringify(appData));
+        }
+
+        function loadData() {
+            const savedData = localStorage.getItem('studyAppData');
+            if (savedData) {
+                appData = JSON.parse(savedData);
+            }
+        }
+
+        // DOM要素の取得
+        const elements = {
+            // 志望校関連
+            schoolNameDisplay1: document.getElementById('schoolNameDisplay1'),
+            daysRemaining1: document.getElementById('daysRemaining1'),
+            editBtn1: document.getElementById('editBtn1'),
+            inputArea1: document.getElementById('inputArea1'),
+            schoolName1: document.getElementById('schoolName1'),
+            examDate1: document.getElementById('examDate1'),
+            saveBtn1: document.getElementById('saveBtn1'),
+
+            schoolNameDisplay2: document.getElementById('schoolNameDisplay2'),
+            daysRemaining2: document.getElementById('daysRemaining2'),
+            editBtn2: document.getElementById('editBtn2'),
+            inputArea2: document.getElementById('inputArea2'),
+            schoolName2: document.getElementById('schoolName2'),
+            examDate2: document.getElementById('examDate2'),
+            saveBtn2: document.getElementById('saveBtn2'),
+
+            schoolNameDisplay3: document.getElementById('schoolNameDisplay3'),
+            daysRemaining3: document.getElementById('daysRemaining3'),
+            editBtn3: document.getElementById('editBtn3'),
+            inputArea3: document.getElementById('inputArea3'),
+            schoolName3: document.getElementById('schoolName3'),
+            examDate3: document.getElementById('examDate3'),
+            saveBtn3: document.getElementById('saveBtn3'),
+
+            schoolNameDisplay4: document.getElementById('schoolNameDisplay4'),
+            daysRemaining4: document.getElementById('daysRemaining4'),
+            editBtn4: document.getElementById('editBtn4'),
+            inputArea4: document.getElementById('inputArea4'),
+            schoolName4: document.getElementById('schoolName4'),
+            examDate4: document.getElementById('examDate4'),
+            saveBtn4: document.getElementById('saveBtn4'),
+
+            // Todo関連
+            todoInput: document.getElementById('todoInput'),
+            addTodoBtn: document.getElementById('addTodoBtn'),
+            todoList: document.getElementById('todoList'),
+
+            // 教材進捗関連
+            materialName: document.getElementById('materialName'),
+            totalPages: document.getElementById('totalPages'),
+            currentPage: document.getElementById('currentPage'),
+            progressInfo: document.getElementById('progressInfo'),
+
+            // 画像関連
+            imageUpload: document.getElementById('imageUpload'),
+            addImageBtn: document.getElementById('addImageBtn'),
+            imageGallery: document.getElementById('imageGallery'),
+
+            // メモ関連
+            freeNotes: document.getElementById('freeNotes')
+        };
+
+        // 日数計算
+        function calculateDaysRemaining(examDate) {
+            if (!examDate) return 0;
+            
+            const today = new Date();
+            const exam = new Date(examDate);
+            today.setHours(0, 0, 0, 0);
+            exam.setHours(0, 0, 0, 0);
+            
+            const diffTime = exam - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return Math.max(0, diffDays);
+        }
+
+        // 志望校表示更新
+        function updateSchoolDisplay() {
+            for (let i = 0; i < 4; i++) {
+                const school = appData.schools[i];
+                const days = calculateDaysRemaining(school.date);
+                
+                elements[`schoolNameDisplay${i+1}`].textContent = school.name || '志望校を設定してください';
+                elements[`daysRemaining${i+1}`].textContent = `${days}日`;
+                
+                if (school.date) {
+                    const date = new Date(school.date).toLocaleDateString('ja-JP');
+                    elements[`schoolNameDisplay${i+1}`].textContent = `${school.name} (${date})`;
+                }
+            }
+        }
+
+        // Todo表示更新
+        function updateTodoDisplay() {
+            elements.todoList.innerHTML = '';
+            
+            appData.todos.forEach((todo, index) => {
+                const li = document.createElement('li');
+                li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+                
+                li.innerHTML = `
+                    <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}>
+                    <span class="todo-text">${todo.text}</span>
+                    <button class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">削除</button>
+                `;
+                
+                // チェックボックスイベント
+                li.querySelector('.todo-checkbox').addEventListener('change', (e) => {
+                    appData.todos[index].completed = e.target.checked;
+                    updateTodoDisplay();
+                });
+                
+                // 削除ボタンイベント
+                li.querySelector('.btn-danger').addEventListener('click', () => {
+                    appData.todos.splice(index, 1);
+                    updateTodoDisplay();
+                });
+                
+                elements.todoList.appendChild(li);
+            });
+        }
+
+        // 進捗表示更新
+        function updateProgressDisplay() {
+            const { name, total, current } = appData.materials;
+            const days = calculateDaysRemaining(appData.schools[0].date); // 第1志望の残り日数を使用
+            
+            elements.materialName.value = name;
+            elements.totalPages.value = total;
+            elements.currentPage.value = current;
+            
+            if (days > 0 && total > current) {
+                const pagesPerDay = Math.ceil((total - current) / days);
+                elements.progressInfo.textContent = `1日あたり: ${pagesPerDay}ページ (残り${total - current}ページ、第1志望まで${days}日)`;
+            } else {
+                elements.progressInfo.textContent = '1日あたり: 0ページ';
+            }
+        }
+
+        // 画像表示更新
+        function updateImageDisplay() {
+            elements.imageGallery.innerHTML = '';
+            
+            if (appData.images.length === 0) {
+                elements.imageGallery.innerHTML = '<div class="empty-state">復習したい問題の画像がここに表示されます</div>';
+                return;
+            }
+            
+            appData.images.forEach((image, index) => {
+                const div = document.createElement('div');
+                div.className = 'image-item fade-in';
+                
+                const img = document.createElement('img');
+                img.src = image.data;
+                img.alt = image.name;
+                img.title = image.name;
+                
+                // 画像クリックで拡大表示
+                img.addEventListener('click', () => {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'image-overlay';
+                    
+                    const fullImg = document.createElement('img');
+                    fullImg.src = image.data;
+                    
+                    overlay.appendChild(fullImg);
+                    document.body.appendChild(overlay);
+                    
+                    overlay.addEventListener('click', () => {
+                        document.body.removeChild(overlay);
+                    });
+                });
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-image-btn';
+                deleteBtn.textContent = '×';
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm('この画像を削除しますか？')) {
+                        appData.images.splice(index, 1);
+                        updateImageDisplay();
+                    }
+                });
+                
+                div.appendChild(img);
+                div.appendChild(deleteBtn);
+                elements.imageGallery.appendChild(div);
+            });
+        }
+
+        // イベントリスナーの設定
+        function setupEventListeners() {
+            // 志望校編集（1〜4志望）
+            for (let i = 1; i <= 4; i++) {
+                elements[`editBtn${i}`].addEventListener('click', () => {
+                    elements[`inputArea${i}`].classList.add('active');
+                    elements[`schoolName${i}`].value = appData.schools[i-1].name;
+                    elements[`examDate${i}`].value = appData.schools[i-1].date;
+                    
+                    // iPadでのフォーカス調整
+                    setTimeout(() => {
+                        elements[`schoolName${i}`].focus();
+                    }, 100);
+                });
+                
+                elements[`saveBtn${i}`].addEventListener('click', () => {
+                    appData.schools[i-1].name = elements[`schoolName${i}`].value;
+                    appData.schools[i-1].date = elements[`examDate${i}`].value;
+                    elements[`inputArea${i}`].classList.remove('active');
+                    updateSchoolDisplay();
+                    updateProgressDisplay(); // 第1志望が変更された場合に進捗も更新
+                    saveData(); //
+                    // キーボードを閉じる
+                    document.activeElement.blur();
+                });
+            }
+
+            // Todo追加
+            const addTodo = () => {
+                const text = elements.todoInput.value.trim();
+                if (text) {
+                    appData.todos.push({ text, completed: false });
+                    elements.todoInput.value = '';
+                    updateTodoDisplay();
+                    saveData(); //
+                    // 成功時の視覚フィードバック
+                    elements.addTodoBtn.style.background = 'linear-gradient(135deg, #48bb78, #38a169)';
+                    setTimeout(() => {
+                        elements.addTodoBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                    }, 200);
+                }
+            };
+            
+            elements.addTodoBtn.addEventListener('click', addTodo);
+            elements.todoInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addTodo();
+                    e.preventDefault(); // iPadでの改行防止
+                }
+            });
+
+            // 教材進捗
+            elements.materialName.addEventListener('input', (e) => {
+                appData.materials.name = e.target.value;
+            });
+            
+            elements.totalPages.addEventListener('input', (e) => {
+                appData.materials.total = parseInt(e.target.value) || 0;
+                updateProgressDisplay();
+                saveData(); //
+            });
+            
+            elements.currentPage.addEventListener('input', (e) => {
+                appData.materials.current = parseInt(e.target.value) || 0;
+                updateProgressDisplay();
+            });
+
+            // 画像アップロード
+            elements.addImageBtn.addEventListener('click', () => {
+                const file = elements.imageUpload.files[0];
+                if (file) {
+                    // ファイルサイズチェック（10MB制限）
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert('ファイルサイズが大きすぎます。10MB以下のファイルを選択してください。');
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        appData.images.push({
+                            name: file.name,
+                            data: e.target.result
+                        });
+                        updateImageDisplay();
+                        elements.imageUpload.value = '';
+                        
+                        // 成功時のフィードバック
+                        elements.addImageBtn.textContent = '追加完了!';
+                        setTimeout(() => {
+                            elements.addImageBtn.textContent = '画像を追加';
+                        }, 1000);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('画像ファイルを選択してください。');
+                }
+            });
+
+            // ドラッグ&ドロップ対応（iPad Safari対応）
+            setupDragAndDrop();
+
+            // 自由メモ
+            elements.freeNotes.addEventListener('input', (e) => {
+                appData.notes = e.target.value;
+            });
+
+            // タッチイベントの最適化
+            setupTouchOptimization();
+        }
+
+        // ドラッグ&ドロップ機能
+        function setupDragAndDrop() {
+            const gallery = elements.imageGallery;
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                gallery.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                gallery.addEventListener(eventName, () => gallery.classList.add('drag-over'), false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                gallery.addEventListener(eventName, () => gallery.classList.remove('drag-over'), false);
+            });
+
+            gallery.addEventListener('drop', (e) => {
+                const files = Array.from(e.dataTransfer.files);
+                files.forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            appData.images.push({
+                                name: file.name,
+                                data: e.target.result
+                            });
+                            updateImageDisplay();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+        }
+
+        // タッチ操作の最適化
+        function setupTouchOptimization() {
+            // 長押し対応でコンテキストメニューを無効化
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+            });
+
+            // ダブルタップズーム防止
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', (event) => {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        }
+
+        // 初期化
+        function init() {
+            loadData(); //
+            setupEventListeners();
+            updateSchoolDisplay();
+            updateTodoDisplay();
+            updateProgressDisplay();
+            updateImageDisplay();
+            
+            // アニメーション遅延
+            document.querySelectorAll('.fade-in').forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
+        }
+
+        // ページ読み込み完了後に初期化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
