@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>学習サポートアプリ</title>
+    <script src="https://cdn.jsdelivr.net/npm/lucide/dist/umd/lucide.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,80 +14,103 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
             min-height: 100vh;
-            color: #333;
+            color: #455a64;
         }
 
         .countdown-bar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            max-width: 1170px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .school-countdown {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.15rem;
+            border-radius: 10px;
         }
 
-        .school-countdown:hover {
-            transform: translateY(-2px);
-        }
-
-        .school-title {
-            font-weight: bold;
-            color: #4a5568;
-            min-width: 80px;
-        }
-
-        .days-remaining {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-left: auto;
-        }
-
-        .edit-btn {
-            background: #4299e1;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-
-        .edit-btn:hover {
-            background: #3182ce;
-        }
-
-        .input-area {
-            display: none;
-            background: #f7fafc;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            gap: 1rem;
-        }
-
-        .input-area.active {
+        .school-cards-container {
             display: flex;
             flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 0.75rem;
+            padding: 0.15rem;
+            width: 100%;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .school-card {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease;
+            width: 230px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+            position: relative;
+        }
+
+        .school-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .school-card .school-name {
+            font-weight: bold;
+            color: #2d3748;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .school-card .exam-date {
+            font-size: 0.75rem;
+            color: #718096;
+            text-align: center;
+        }
+
+        .school-card .days-remaining-container {
+            text-align: center;
+            margin: 0.25rem 0;
+        }
+
+        .school-card .days-remaining {
+            background: #1976d2;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 1rem;
+            line-height: 1.2;
+            font-weight: 600;
+        }
+        
+        .delete-card-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #e2e8f0;
+            color: #718096;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .delete-card-btn:hover {
+            background: #e57373;
+            color: white;
+            transform: scale(1.1);
         }
 
         .container {
@@ -95,37 +119,36 @@
             padding: 0 1rem;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
+            gap: 1rem;
         }
 
         .section {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            padding: 2rem;
+            padding: 1rem;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease;
-        }
-
-        .section:hover {
-            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         .section h2 {
-            color: #2d3748;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            border-bottom: 2px solid #e2e8f0;
+            color: #0d47a1;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            border-bottom: 2px solid #90caf9;
             padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .input-group {
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             font-weight: 600;
             color: #4a5568;
         }
@@ -136,8 +159,8 @@
         input[type="file"],
         textarea {
             width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e2e8f0;
+            padding: 0.6rem;
+            border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 1rem;
             transition: border-color 0.2s ease;
@@ -146,53 +169,65 @@
         input:focus,
         textarea:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
         }
 
         .btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #28a745;
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.2rem 0.5rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.25);
+            background-color: #218838;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #fc8181, #f56565);
+            background: #e57373;
+            color: white;
         }
 
         .btn-danger:hover {
-            box-shadow: 0 4px 15px rgba(245, 101, 101, 0.4);
+            background: #ef5350;
+            box-shadow: 0 4px 15px rgba(239, 83, 80, 0.3);
         }
 
         .todo-list {
             list-style: none;
-            margin-top: 1rem;
+            margin-top: 0.75rem;
         }
 
         .todo-item {
             background: #f7fafc;
-            padding: 1rem;
+            padding: 0.75rem;
             margin-bottom: 0.5rem;
             border-radius: 10px;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             transition: all 0.2s ease;
+            border: 1px solid #e2e8f0;
         }
 
         .todo-item:hover {
-            background: #edf2f7;
+            background: #e3f2fd;
         }
 
         .todo-item.completed {
@@ -203,7 +238,7 @@
         .todo-checkbox {
             width: 18px;
             height: 18px;
-            accent-color: #667eea;
+            accent-color: #1976d2;
         }
 
         .todo-text {
@@ -211,11 +246,11 @@
         }
 
         .progress-info {
-            background: linear-gradient(135deg, #4fd1c7, #38b2ac);
+            background: #64b5f6;
             color: white;
-            padding: 1rem;
+            padding: 0.75rem;
             border-radius: 10px;
-            margin-top: 1rem;
+            margin-top: 0.75rem;
             text-align: center;
             font-weight: 600;
         }
@@ -227,7 +262,7 @@
             margin-top: 1rem;
             min-height: 120px;
             padding: 1rem;
-            border: 2px dashed #cbd5e0;
+            border: 2px dashed #b0c4de;
             border-radius: 10px;
             place-items: center;
         }
@@ -255,7 +290,7 @@
             position: absolute;
             top: 5px;
             right: 5px;
-            background: #e53e3e;
+            background: rgba(229, 115, 115, 0.8);
             color: white;
             border: none;
             width: 25px;
@@ -266,6 +301,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+        .delete-image-btn:hover {
+            background: #e57373;
         }
 
         .image-overlay {
@@ -291,25 +330,67 @@
 
         .empty-state {
             text-align: center;
-            color: #a0aec0;
+            color: #78909c;
             font-style: italic;
             grid-column: 1 / -1;
+        }
+
+        .material-item {
+            background: #f7fafc;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        .material-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .material-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #2d3748;
+        }
+        .delete-material-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e3f2fd;
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 0.75rem;
+        }
+        .progress-bar {
+            background: #1976d2;
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        .material-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        #notesDisplay {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 10px;
+            min-height: 150px;
+            white-space: pre-wrap; /* 改行をそのまま表示 */
+            word-wrap: break-word;
+            border: 1px solid #e2e8f0;
         }
 
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
                 padding: 0 1rem;
-            }
-
-            .school-countdown {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .days-remaining {
-                margin-left: 0;
-                margin-top: 0.5rem;
             }
         }
 
@@ -330,112 +411,136 @@
     </style>
 </head>
 <body>
-    <div class="countdown-bar">
-        <div class="school-countdown" id="schoolCountdown1">
-            <div class="school-title">第1志望</div>
-            <div id="schoolInfo1">
-                <span id="schoolNameDisplay1">志望校を設定してください</span>
-            </div>
-            <div class="days-remaining" id="daysRemaining1">0日</div>
-            <button class="edit-btn" id="editBtn1">編集</button>
-            <div class="input-area" id="inputArea1">
-                <input type="text" id="schoolName1" placeholder="学校名を入力">
-                <input type="date" id="examDate1">
-                <button class="btn" id="saveBtn1">保存</button>
+    <div class="section" style="max-width: 1170px; margin: 1rem auto;">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+            <h2 style="margin-bottom: 0; border-bottom: none; font-size: 1.5rem;"><i data-lucide="graduation-cap"></i> 志望校一覧</h2>
+            <button id="addSchoolBtn" class="btn"><i data-lucide="plus"></i> </button>
+        </div>
+        <div class="countdown-bar">
+            <div id="schoolCardsContainer" class="school-cards-container">
+                <!-- 志望校カードはここに動的に生成されます -->
             </div>
         </div>
-        
-        <div class="school-countdown" id="schoolCountdown2">
-            <div class="school-title">第2志望</div>
-            <div id="schoolInfo2">
-                <span id="schoolNameDisplay2">志望校を設定してください</span>
-            </div>
-            <div class="days-remaining" id="daysRemaining2">0日</div>
-            <button class="edit-btn" id="editBtn2">編集</button>
-            <div class="input-area" id="inputArea2">
-                <input type="text" id="schoolName2" placeholder="学校名を入力">
-                <input type="date" id="examDate2">
-                <button class="btn" id="saveBtn2">保存</button>
-            </div>
+    </div>
+
+    <div id="addSchoolForm" class="section" style="display: none; margin-bottom: 1.5rem; max-width: 1170px; margin-left: auto; margin-right: auto;">
+        <h2><i data-lucide="plus-circle"></i> 新しい志望校を追加</h2>
+        <div class="input-group">
+            <label for="newSchoolName">学校名</label>
+            <input type="text" id="newSchoolName" placeholder="例: 〇〇大学">
         </div>
-        
-        <div class="school-countdown" id="schoolCountdown3">
-            <div class="school-title">第3志望</div>
-            <div id="schoolInfo3">
-                <span id="schoolNameDisplay3">志望校を設定してください</span>
-            </div>
-            <div class="days-remaining" id="daysRemaining3">0日</div>
-            <button class="edit-btn" id="editBtn3">編集</button>
-            <div class="input-area" id="inputArea3">
-                <input type="text" id="schoolName3" placeholder="学校名を入力">
-                <input type="date" id="examDate3">
-                <button class="btn" id="saveBtn3">保存</button>
-            </div>
+        <div class="input-group">
+            <label for="newExamDate">試験日</label>
+            <input type="date" id="newExamDate">
         </div>
-        
-        
+        <div>
+            <button id="saveNewSchoolBtn" class="btn"><i data-lucide="save"></i> 保存</button>
+            <button id="cancelNewSchoolBtn" class="btn btn-danger"><i data-lucide="x-circle"></i> キャンセル</button>
+        </div>
+    </div>
+
+    <div id="addMaterialForm" class="section" style="display: none; margin-bottom: 1.5rem; max-width: 1170px; margin-left: auto; margin-right: auto;">
+        <h2><i data-lucide="plus-circle"></i> 新しい教材を追加</h2>
+        <div class="input-group">
+            <label for="newMaterialName">教材名</label>
+            <input type="text" id="newMaterialName" placeholder="例: 算数問題集">
+        </div>
+        <div class="input-group">
+            <label for="newTotalPages">総ページ数</label>
+            <input type="number" id="newTotalPages" min="0" placeholder="0">
+        </div>
+        <div class="input-group">
+            <label for="newCurrentPage">現在のページ</label>
+            <input type="number" id="newCurrentPage" min="0" placeholder="0">
+        </div>
+        <div>
+            <button id="saveNewMaterialBtn" class="btn"><i data-lucide="save"></i> 保存</button>
+            <button id="cancelNewMaterialBtn" class="btn btn-danger"><i data-lucide="x-circle"></i> キャンセル</button>
+        </div>
+    </div>
+
+    <div id="addTodoForm" class="section" style="display: none; margin-bottom: 1.5rem; max-width: 1170px; margin-left: auto; margin-right: auto;">
+        <h2><i data-lucide="plus-circle"></i> 新しいTodoを追加</h2>
+        <div class="input-group">
+            <label for="todoInput">タスク</label>
+            <input type="text" id="todoInput" placeholder="新しいタスクを入力">
+        </div>
+        <div class="input-group">
+            <label for="todoDueDate">期限</label>
+            <input type="date" id="todoDueDate">
+        </div>
+        <div>
+            <button id="addTodoBtn" class="btn"><i data-lucide="save"></i> 保存</button>
+            <button id="cancelAddTodoBtn" class="btn btn-danger"><i data-lucide="x-circle"></i> キャンセル</button>
+        </div>
+    </div>
+
+    <div id="addImageForm" class="section" style="display: none; margin-bottom: 1.5rem; max-width: 1170px; margin-left: auto; margin-right: auto;">
+        <h2><i data-lucide="plus-circle"></i> 新しい画像を追加</h2>
+        <div class="input-group">
+            <label for="imageUpload">画像ファイル</label>
+            <input type="file" id="imageUpload" accept="image/*">
+        </div>
+        <div>
+            <button id="addImageBtn" class="btn"><i data-lucide="save"></i> 保存</button>
+            <button id="cancelAddImageBtn" class="btn btn-danger"><i data-lucide="x-circle"></i> キャンセル</button>
+        </div>
     </div>
 
     <div class="container">
-        
-
         <div class="section fade-in">
-            <h2>📚 必達ページ数計算</h2>
-            <div class="input-group">
-                <label for="totalPages">総ページ数</label>
-                <input type="number" id="totalPages" min="0" placeholder="0">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin-bottom: 0; border-bottom: none;"><i data-lucide="book-open-check"></i> 必達ページ数計算</h2>
+                <button id="addMaterialBtn" class="btn"><i data-lucide="plus"></i></button>
             </div>
-            <div class="input-group">
-                <label for="currentPage">現在のページ</label>
-                <input type="number" id="currentPage" min="0" placeholder="0">
-            </div>
-            <div class="progress-info" id="progressInfo">
-                本日の必達: 0ページ
+            <div id="materialList">
+                <!-- 教材リストがここに表示されます -->
             </div>
         </div>
 
         <div class="section fade-in">
-            <h2>📝 Todoリスト</h2>
-            <div class="input-group">
-                <input type="text" id="todoInput" placeholder="新しいタスクを入力してください">
-                <button class="btn" id="addTodoBtn">追加</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin-bottom: 0; border-bottom: none;"><i data-lucide="list-checks"></i> Todoリスト</h2>
+                <button id="showAddTodoFormBtn" class="btn"><i data-lucide="plus"></i></button>
             </div>
             <ul class="todo-list" id="todoList"></ul>
         </div>
 
         <div class="section fade-in">
-            <h2>📝 自由メモ</h2>
-            <textarea id="freeNotes" placeholder="自由にメモを記入してください..." rows="8"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin-bottom: 0; border-bottom: none;"><i data-lucide="file-text"></i> 自由メモ</h2>
+                <button id="editNotesBtn" class="btn"><i data-lucide="edit-3"></i> 編集</button>
+            </div>
+            <div id="notesDisplay"></div>
+            <div id="notesForm" style="display: none;">
+                <textarea id="freeNotes" placeholder="自由にメモを記入してください..." rows="8"></textarea>
+                <div style="margin-top: 0.75rem;">
+                    <button id="saveNotesBtn" class="btn"><i data-lucide="save"></i> 保存</button>
+                    <button id="cancelNotesBtn" class="btn btn-danger"><i data-lucide="x-circle"></i> キャンセル</button>
+                </div>
+            </div>
         </div>
 
         <div class="section fade-in">
-            <h2>📷 復習問題（画像）</h2>
-            <div class="input-group">
-                <input type="file" id="imageUpload" accept="image/*">
-                <button class="btn" id="addImageBtn">画像を追加</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin-bottom: 0; border-bottom: none;"><i data-lucide="images"></i> 復習問題（画像）</h2>
+                <button id="showAddImageFormBtn" class="btn"><i data-lucide="plus"></i></button>
             </div>
             <div class="image-gallery" id="imageGallery">
                 <div class="empty-state">復習したい問題の画像がここに表示されます</div>
             </div>
         </div>
-
-        
     </div>
 
     <script>
-        // メモリ内データストレージ（ページリロードで消える）
+        // メモリ内データストレージ
         let appData = {
-            schools: [
-                { name: '', date: '' },
-                { name: '', date: '' },
-                { name: '', date: '' }
-            ],
+            schools: [],
             todos: [],
-            materials: { total: 0, current: 0 },
+            materials: [],
             images: [],
             notes: ''
         };
-
 
         function saveData() {
             localStorage.setItem('studyAppData', JSON.stringify(appData));
@@ -445,64 +550,71 @@
             const savedData = localStorage.getItem('studyAppData');
             if (savedData) {
                 appData = JSON.parse(savedData);
+                if (!appData.schools) appData.schools = [];
+                if (!appData.materials || !Array.isArray(appData.materials)) {
+                    // 旧データ形式からの移行
+                    if (appData.materials && typeof appData.materials === 'object') {
+                         appData.materials = [{
+                            name: '参考書',
+                            total: appData.materials.total || 0,
+                            current: appData.materials.current || 0
+                        }];
+                    } else {
+                        appData.materials = [];
+                    }
+                }
             }
         }
 
         // DOM要素の取得
         const elements = {
-            // 志望校関連
-            schoolNameDisplay1: document.getElementById('schoolNameDisplay1'),
-            daysRemaining1: document.getElementById('daysRemaining1'),
-            editBtn1: document.getElementById('editBtn1'),
-            inputArea1: document.getElementById('inputArea1'),
-            schoolName1: document.getElementById('schoolName1'),
-            examDate1: document.getElementById('examDate1'),
-            saveBtn1: document.getElementById('saveBtn1'),
+            schoolCardsContainer: document.getElementById('schoolCardsContainer'),
+            addSchoolBtn: document.getElementById('addSchoolBtn'),
+            addSchoolForm: document.getElementById('addSchoolForm'),
+            newSchoolName: document.getElementById('newSchoolName'),
+            newExamDate: document.getElementById('newExamDate'),
+            saveNewSchoolBtn: document.getElementById('saveNewSchoolBtn'),
+            cancelNewSchoolBtn: document.getElementById('cancelNewSchoolBtn'),
+            
+            addMaterialBtn: document.getElementById('addMaterialBtn'),
+            addMaterialForm: document.getElementById('addMaterialForm'),
+            newMaterialName: document.getElementById('newMaterialName'),
+            newTotalPages: document.getElementById('newTotalPages'),
+            newCurrentPage: document.getElementById('newCurrentPage'),
+            saveNewMaterialBtn: document.getElementById('saveNewMaterialBtn'),
+            cancelNewMaterialBtn: document.getElementById('cancelNewMaterialBtn'),
+            materialList: document.getElementById('materialList'),
 
-            schoolNameDisplay2: document.getElementById('schoolNameDisplay2'),
-            daysRemaining2: document.getElementById('daysRemaining2'),
-            editBtn2: document.getElementById('editBtn2'),
-            inputArea2: document.getElementById('inputArea2'),
-            schoolName2: document.getElementById('schoolName2'),
-            examDate2: document.getElementById('examDate2'),
-            saveBtn2: document.getElementById('saveBtn2'),
-
-            schoolNameDisplay3: document.getElementById('schoolNameDisplay3'),
-            daysRemaining3: document.getElementById('daysRemaining3'),
-            editBtn3: document.getElementById('editBtn3'),
-            inputArea3: document.getElementById('inputArea3'),
-            schoolName3: document.getElementById('schoolName3'),
-            examDate3: document.getElementById('examDate3'),
-            saveBtn3: document.getElementById('saveBtn3'),
-
-            // Todo関連
+            showAddTodoFormBtn: document.getElementById('showAddTodoFormBtn'),
+            addTodoForm: document.getElementById('addTodoForm'),
             todoInput: document.getElementById('todoInput'),
+            todoDueDate: document.getElementById('todoDueDate'),
             addTodoBtn: document.getElementById('addTodoBtn'),
+            cancelAddTodoBtn: document.getElementById('cancelAddTodoBtn'),
             todoList: document.getElementById('todoList'),
 
-            // 教材進捗関連
-            totalPages: document.getElementById('totalPages'),
-            currentPage: document.getElementById('currentPage'),
-            progressInfo: document.getElementById('progressInfo'),
-
-            // 画像関連
+            showAddImageFormBtn: document.getElementById('showAddImageFormBtn'),
+            addImageForm: document.getElementById('addImageForm'),
             imageUpload: document.getElementById('imageUpload'),
             addImageBtn: document.getElementById('addImageBtn'),
+            cancelAddImageBtn: document.getElementById('cancelAddImageBtn'),
             imageGallery: document.getElementById('imageGallery'),
 
-            // メモ関連
-            freeNotes: document.getElementById('freeNotes')
+            editNotesBtn: document.getElementById('editNotesBtn'),
+            notesDisplay: document.getElementById('notesDisplay'),
+            notesForm: document.getElementById('notesForm'),
+            freeNotes: document.getElementById('freeNotes'),
+            saveNotesBtn: document.getElementById('saveNotesBtn'),
+            cancelNotesBtn: document.getElementById('cancelNotesBtn')
         };
 
         // 日数計算
         function calculateDaysRemaining(examDate) {
             if (!examDate) return 0;
-            
             const today = new Date();
             const exam = new Date(examDate);
             today.setHours(0, 0, 0, 0);
             exam.setHours(0, 0, 0, 0);
-            
             const diffTime = exam - today;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             return Math.max(0, diffDays);
@@ -510,209 +622,309 @@
 
         // 志望校表示更新
         function updateSchoolDisplay() {
-            for (let i = 0; i < 3; i++) {
-                const school = appData.schools[i];
-                const days = calculateDaysRemaining(school.date);
-                
-                elements[`schoolNameDisplay${i+1}`].textContent = school.name || '志望校を設定してください';
-                elements[`daysRemaining${i+1}`].textContent = `${days}日`;
-                
-                if (school.date) {
-                    const date = new Date(school.date).toLocaleDateString('ja-JP');
-                    elements[`schoolNameDisplay${i+1}`].textContent = `${school.name} (${date})`;
-                }
+            elements.schoolCardsContainer.innerHTML = '';
+            if (appData.schools.length === 0) {
+                const emptyMessage = document.createElement('div');
+                emptyMessage.textContent = '「志望校を追加」ボタンから志望校を登録できます';
+                emptyMessage.style.color = '#4a5568';
+                emptyMessage.style.padding = '1rem';
+                emptyMessage.style.width = '100%';
+                emptyMessage.style.textAlign = 'center';
+                elements.schoolCardsContainer.appendChild(emptyMessage);
+            } else {
+                appData.schools.forEach((school, index) => {
+                    const days = calculateDaysRemaining(school.date);
+                    const card = document.createElement('div');
+                    card.className = 'school-card';
+                    card.dataset.index = index;
+
+                    const date = new Date(school.date);
+                    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric', weekday: 'short' };
+                    const formattedDate = school.date ? date.toLocaleDateString('ja-JP', dateOptions) : '日付未設定';
+
+                    card.innerHTML = `
+                        <button class="delete-card-btn"><i data-lucide="x" style="width: 14px; height: 14px;"></i></button>
+                        <div class="school-name" title="${school.name}">${school.name}</div>
+                        <div class="exam-date">${formattedDate}</div>
+                        <div class="days-remaining-container">
+                            <span class="days-remaining">あと ${days} 日</span>
+                        </div>
+                    `;
+                    elements.schoolCardsContainer.appendChild(card);
+                });
             }
+            updateMaterialDisplay();
+            lucide.createIcons();
+        }
+
+        // 教材進捗表示更新
+        function updateMaterialDisplay() {
+            elements.materialList.innerHTML = '';
+            const primarySchoolDate = appData.schools.length > 0 ? appData.schools[0].date : null;
+            const days = calculateDaysRemaining(primarySchoolDate);
+
+            if (appData.materials.length === 0) {
+                elements.materialList.innerHTML = '<div class="empty-state" style="color: #a0aec0; font-style: italic; padding: 1rem 0;">教材が登録されていません</div>';
+                return;
+            }
+
+            appData.materials.forEach((material, index) => {
+                const percentage = material.total > 0 ? (material.current / material.total) * 100 : 0;
+                const pagesPerDay = (days > 0 && material.total > material.current) ? Math.ceil((material.total - material.current) / days) : 0;
+
+                const materialEl = document.createElement('div');
+                materialEl.className = 'material-item';
+                materialEl.innerHTML = `
+                    <div class="material-header">
+                        <span class="material-name">${material.name}</span>
+                        <button class="btn btn-danger delete-material-btn" data-index="${index}"><i data-lucide="trash-2" style="width:14px; height:14px;"></i></button>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${percentage}%;"></div>
+                    </div>
+                    <div class="material-details">
+                        <div class="input-group">
+                            <label>現在のページ</label>
+                            <input type="number" class="current-page-input" value="${material.current}" data-index="${index}">
+                        </div>
+                        <div class="input-group">
+                            <label>総ページ数</label>
+                            <input type="number" class="total-pages-input" value="${material.total}" data-index="${index}">
+                        </div>
+                        <div class="progress-info">
+                            本日の必達: ${pagesPerDay}ページ (残り${material.total - material.current})
+                        </div>
+                    </div>
+                `;
+                elements.materialList.appendChild(materialEl);
+            });
+            lucide.createIcons();
         }
 
         // Todo表示更新
         function updateTodoDisplay() {
             elements.todoList.innerHTML = '';
-            
+            if (appData.todos.length === 0) {
+                elements.todoList.innerHTML = '<div class="empty-state" style="color: #a0aec0; font-style: italic; padding: 1rem 0;">Todoが登録されていません</div>';
+                return;
+            }
             appData.todos.forEach((todo, index) => {
                 const li = document.createElement('li');
                 li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
-                
                 li.innerHTML = `
                     <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}>
                     <span class="todo-text">${todo.text}</span>
-                    <button class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">削除</button>
+                    <button class="btn btn-danger delete-todo-btn" data-index="${index}" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;"><i data-lucide="trash-2" style="width:14px; height:14px;"></i></button>
                 `;
-                
-                // チェックボックスイベント
                 li.querySelector('.todo-checkbox').addEventListener('change', (e) => {
                     appData.todos[index].completed = e.target.checked;
-                    updateTodoDisplay();
                     saveData();
-                });
-                
-                // 削除ボタンイベント
-                li.querySelector('.btn-danger').addEventListener('click', () => {
-                    appData.todos.splice(index, 1);
                     updateTodoDisplay();
-                    saveData();
                 });
-                
                 elements.todoList.appendChild(li);
             });
-        }
-
-        // 進捗表示更新
-        function updateProgressDisplay() {
-            const { total, current } = appData.materials;
-            const days = calculateDaysRemaining(appData.schools[0].date); // 第1志望の残り日数を使用
-            
-            elements.totalPages.value = total;
-            elements.currentPage.value = current;
-            
-            if (days > 0 && total > current) {
-                const pagesPerDay = Math.ceil((total - current) / days);
-                elements.progressInfo.textContent = `本日の必達: ${pagesPerDay}ページ (残り${total - current}ページ)`;
-            } else {
-                elements.progressInfo.textContent = '本日の必達: 0ページ';
-            }
+            lucide.createIcons();
         }
 
         // 画像表示更新
         function updateImageDisplay() {
             elements.imageGallery.innerHTML = '';
-            
             if (appData.images.length === 0) {
                 elements.imageGallery.innerHTML = '<div class="empty-state">復習したい問題の画像がここに表示されます</div>';
                 return;
             }
-            
             appData.images.forEach((image, index) => {
                 const div = document.createElement('div');
                 div.className = 'image-item fade-in';
-                
                 const img = document.createElement('img');
                 img.src = image.data;
                 img.alt = image.name;
                 img.title = image.name;
-                
-                // 画像クリックで拡大表示
                 img.addEventListener('click', () => {
                     const overlay = document.createElement('div');
                     overlay.className = 'image-overlay';
-                    
                     const fullImg = document.createElement('img');
                     fullImg.src = image.data;
-                    
                     overlay.appendChild(fullImg);
                     document.body.appendChild(overlay);
-                    
-                    overlay.addEventListener('click', () => {
-                        document.body.removeChild(overlay);
-                    });
+                    overlay.addEventListener('click', () => document.body.removeChild(overlay));
                 });
-                
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'delete-image-btn';
-                deleteBtn.textContent = '×';
+                deleteBtn.innerHTML = '<i data-lucide="x" style="width: 16px; height: 16px;"></i>';
                 deleteBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     if (confirm('この画像を削除しますか？')) {
                         appData.images.splice(index, 1);
-                        updateImageDisplay();
                         saveData();
+                        updateImageDisplay();
                     }
                 });
-                
                 div.appendChild(img);
                 div.appendChild(deleteBtn);
                 elements.imageGallery.appendChild(div);
             });
+            lucide.createIcons();
+        }
+
+        function updateNotesDisplay() {
+            elements.notesDisplay.textContent = appData.notes || 'メモがありません';
+            elements.freeNotes.value = appData.notes;
         }
 
         // イベントリスナーの設定
         function setupEventListeners() {
-            // 志望校編集（1〜3志望）
-            for (let i = 1; i <= 3; i++) {
-                elements[`editBtn${i}`].addEventListener('click', () => {
-                    elements[`inputArea${i}`].classList.add('active');
-                    elements[`schoolName${i}`].value = appData.schools[i-1].name;
-                    elements[`examDate${i}`].value = appData.schools[i-1].date;
-                    
-                    // iPadでのフォーカス調整
-                    setTimeout(() => {
-                        elements[`schoolName${i}`].focus();
-                    }, 100);
-                });
-                
-                elements[`saveBtn${i}`].addEventListener('click', () => {
-                    appData.schools[i-1].name = elements[`schoolName${i}`].value;
-                    appData.schools[i-1].date = elements[`examDate${i}`].value;
-                    elements[`inputArea${i}`].classList.remove('active');
-                    updateSchoolDisplay();
-                    updateProgressDisplay(); // 第1志望が変更された場合に進捗も更新
-                    saveData();
-                    // キーボードを閉じる
-                    document.activeElement.blur();
-                });
-            }
+            elements.addSchoolBtn.addEventListener('click', () => {
+                elements.addSchoolForm.style.display = 'block';
+                elements.addSchoolForm.classList.add('fade-in');
+                elements.newSchoolName.focus();
+            });
 
-            // Todo追加
-            const addTodo = () => {
+            elements.cancelNewSchoolBtn.addEventListener('click', () => {
+                elements.addSchoolForm.style.display = 'none';
+                elements.addSchoolForm.classList.remove('fade-in');
+                elements.newSchoolName.value = '';
+                elements.newExamDate.value = '';
+            });
+
+            elements.saveNewSchoolBtn.addEventListener('click', () => {
+                const name = elements.newSchoolName.value.trim();
+                const date = elements.newExamDate.value;
+                if (name && date) {
+                    appData.schools.push({ name, date });
+                    appData.schools.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    saveData();
+                    updateSchoolDisplay();
+                    elements.cancelNewSchoolBtn.click();
+                } else {
+                    alert('学校名と試験日を入力してください。');
+                }
+            });
+
+            elements.schoolCardsContainer.addEventListener('click', (e) => {
+                if (e.target.closest('.delete-card-btn')) {
+                    const card = e.target.closest('.school-card');
+                    if (!card) return;
+                    const index = parseInt(card.dataset.index, 10);
+                    if (confirm(`「${appData.schools[index].name}」を削除しますか？`)) {
+                        appData.schools.splice(index, 1);
+                        saveData();
+                        updateSchoolDisplay();
+                    }
+                }
+            });
+
+            elements.addMaterialBtn.addEventListener('click', () => {
+                elements.addMaterialForm.style.display = 'block';
+                elements.addMaterialForm.classList.add('fade-in');
+                elements.newMaterialName.focus();
+            });
+
+            elements.cancelNewMaterialBtn.addEventListener('click', () => {
+                elements.addMaterialForm.style.display = 'none';
+                elements.addMaterialForm.classList.remove('fade-in');
+                elements.newMaterialName.value = '';
+                elements.newTotalPages.value = '';
+                elements.newCurrentPage.value = '';
+            });
+
+            elements.saveNewMaterialBtn.addEventListener('click', () => {
+                const name = elements.newMaterialName.value.trim();
+                const total = parseInt(elements.newTotalPages.value) || 0;
+                const current = parseInt(elements.newCurrentPage.value) || 0;
+                if (name && total > 0) {
+                    appData.materials.push({ name, total, current });
+                    saveData();
+                    updateMaterialDisplay();
+                    elements.cancelNewMaterialBtn.click();
+                } else {
+                    alert('教材名と総ページ数を入力してください。');
+                }
+            });
+            
+            elements.materialList.addEventListener('input', (e) => {
+                const index = e.target.dataset.index;
+                if (e.target.classList.contains('current-page-input')) {
+                    appData.materials[index].current = parseInt(e.target.value) || 0;
+                }
+                if (e.target.classList.contains('total-pages-input')) {
+                    appData.materials[index].total = parseInt(e.target.value) || 0;
+                }
+                saveData();
+                updateMaterialDisplay();
+            });
+
+            elements.materialList.addEventListener('click', (e) => {
+                if (e.target.closest('.delete-material-btn')) {
+                    const button = e.target.closest('.delete-material-btn');
+                    const index = parseInt(button.dataset.index, 10);
+                    if (confirm(`「${appData.materials[index].name}」を削除しますか？`)) {
+                        appData.materials.splice(index, 1);
+                        saveData();
+                        updateMaterialDisplay();
+                    }
+                }
+            });
+
+            elements.showAddTodoFormBtn.addEventListener('click', () => {
+                elements.addTodoForm.style.display = 'block';
+                elements.addTodoForm.classList.add('fade-in');
+                elements.todoInput.focus();
+            });
+
+            elements.cancelAddTodoBtn.addEventListener('click', () => {
+                elements.addTodoForm.style.display = 'none';
+                elements.addTodoForm.classList.remove('fade-in');
+                elements.todoInput.value = '';
+                elements.todoDueDate.value = '';
+            });
+
+            elements.addTodoBtn.addEventListener('click', () => {
                 const text = elements.todoInput.value.trim();
                 if (text) {
-                    appData.todos.push({ text, completed: false });
-                    elements.todoInput.value = '';
-                    updateTodoDisplay();
+                    appData.todos.push({ text, completed: false, dueDate: elements.todoDueDate.value });
                     saveData();
-                    // 成功時の視覚フィードバック
-                    elements.addTodoBtn.style.background = 'linear-gradient(135deg, #48bb78, #38a169)';
-                    setTimeout(() => {
-                        elements.addTodoBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-                    }, 200);
-                }
-            };
-            
-            elements.addTodoBtn.addEventListener('click', addTodo);
-            elements.todoInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    addTodo();
-                    e.preventDefault(); // iPadでの改行防止
+                    updateTodoDisplay();
+                    elements.cancelAddTodoBtn.click();
                 }
             });
 
-            // 教材進捗
-            elements.totalPages.addEventListener('input', (e) => {
-                appData.materials.total = parseInt(e.target.value) || 0;
-                updateProgressDisplay();
-                saveData();
-            });
-            
-            elements.currentPage.addEventListener('input', (e) => {
-                appData.materials.current = parseInt(e.target.value) || 0;
-                updateProgressDisplay();
-                saveData();
+            elements.todoList.addEventListener('click', (e) => {
+                if (e.target.closest('.delete-todo-btn')) {
+                    const button = e.target.closest('.delete-todo-btn');
+                    const index = parseInt(button.dataset.index, 10);
+                    if (confirm(`「${appData.todos[index].text}」を削除しますか？`)) {
+                        appData.todos.splice(index, 1);
+                        saveData();
+                        updateTodoDisplay();
+                    }
+                }
             });
 
-            // 画像アップロード
+            elements.showAddImageFormBtn.addEventListener('click', () => {
+                elements.addImageForm.style.display = 'block';
+                elements.addImageForm.classList.add('fade-in');
+            });
+
+            elements.cancelAddImageBtn.addEventListener('click', () => {
+                elements.addImageForm.style.display = 'none';
+                elements.addImageForm.classList.remove('fade-in');
+                elements.imageUpload.value = '';
+            });
+
             elements.addImageBtn.addEventListener('click', () => {
                 const file = elements.imageUpload.files[0];
                 if (file) {
-                    // ファイルサイズチェック（10MB制限）
                     if (file.size > 10 * 1024 * 1024) {
                         alert('ファイルサイズが大きすぎます。10MB以下のファイルを選択してください。');
                         return;
                     }
-                    
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        appData.images.push({
-                            name: file.name,
-                            data: e.target.result
-                        });
-                        updateImageDisplay();
+                        appData.images.push({ name: file.name, data: e.target.result });
                         saveData();
-                        elements.imageUpload.value = '';
-                        
-                        // 成功時のフィードバック
-                        elements.addImageBtn.textContent = '追加完了!';
-                        setTimeout(() => {
-                            elements.addImageBtn.textContent = '画像を追加';
-                        }, 1000);
+                        updateImageDisplay();
+                        elements.cancelAddImageBtn.click();
                     };
                     reader.readAsDataURL(file);
                 } else {
@@ -720,75 +932,27 @@
                 }
             });
 
-            // ドラッグ&ドロップ対応（iPad Safari対応）
-            setupDragAndDrop();
+            elements.editNotesBtn.addEventListener('click', () => {
+                elements.notesDisplay.style.display = 'none';
+                elements.notesForm.style.display = 'block';
+                elements.editNotesBtn.style.display = 'none';
+            });
 
-            // 自由メモ
-            elements.freeNotes.addEventListener('input', (e) => {
-                appData.notes = e.target.value;
+            elements.cancelNotesBtn.addEventListener('click', () => {
+                elements.notesDisplay.style.display = 'block';
+                elements.notesForm.style.display = 'none';
+                elements.editNotesBtn.style.display = 'inline-flex';
+                elements.freeNotes.value = appData.notes; // 変更をリセット
+            });
+
+            elements.saveNotesBtn.addEventListener('click', () => {
+                appData.notes = elements.freeNotes.value;
                 saveData();
+                updateNotesDisplay();
+                elements.notesDisplay.style.display = 'block';
+                elements.notesForm.style.display = 'none';
+                elements.editNotesBtn.style.display = 'inline-flex';
             });
-
-            // タッチイベントの最適化
-            setupTouchOptimization();
-        }
-
-        // ドラッグ&ドロップ機能
-        function setupDragAndDrop() {
-            const gallery = elements.imageGallery;
-            
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                gallery.addEventListener(eventName, preventDefaults, false);
-            });
-
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                gallery.addEventListener(eventName, () => gallery.classList.add('drag-over'), false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                gallery.addEventListener(eventName, () => gallery.classList.remove('drag-over'), false);
-            });
-
-            gallery.addEventListener('drop', (e) => {
-                const files = Array.from(e.dataTransfer.files);
-                files.forEach(file => {
-                    if (file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            appData.images.push({
-                                name: file.name,
-                                data: e.target.result
-                            });
-                            updateImageDisplay();
-                            saveData();
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            });
-        }
-
-        // タッチ操作の最適化
-        function setupTouchOptimization() {
-            // 長押し対応でコンテキストメニューを無効化
-            document.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-            });
-
-            // ダブルタップズーム防止
-            let lastTouchEnd = 0;
-            document.addEventListener('touchend', (event) => {
-                const now = (new Date()).getTime();
-                if (now - lastTouchEnd <= 300) {
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false);
         }
 
         // 初期化
@@ -797,21 +961,16 @@
             setupEventListeners();
             updateSchoolDisplay();
             updateTodoDisplay();
-            updateProgressDisplay();
+            updateMaterialDisplay();
             updateImageDisplay();
-            elements.freeNotes.value = appData.notes;
+            updateNotesDisplay();
             
-            // アニメーション遅延
             document.querySelectorAll('.fade-in').forEach((el, index) => {
                 el.style.animationDelay = `${index * 0.1}s`;
             });
+            lucide.createIcons();
         }
 
-        // ページ読み込み完了後に初期化
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
-</body>
-</html>/ ページ読み込み完了後に初期化
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
